@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>upload</title>
+	<meta charset="utf-8">
+</head>
+<body>
+
+	<input type="file" onchange="upload_file(this.files,event)" name=""><br>
+	<div style="height: 20px;width: 200px;border: solid thin #aaa;">
+		<div class="js-progress" style="width: 0%;background-color: blue;color:white;height: 100%;text-align: center;">
+			0%
+		</div>
+	</div>
+</body>
+</html>
+
+<script type="text/javascript">
+	
+	function upload_file(files,e){
+
+		var ajax =  new XMLHttpRequest();
+		var stuff = new FormData();
+		var progress = document.querySelector(".js-progress");
+
+		for (var i = 0; i < files.length; i++) {
+			
+			stuff.append("file"+i,files[i]);
+		}
+
+		//listen for result
+		ajax.addEventListener("readystatechange",function(e){
+
+			if(ajax.readyState == 4 && ajax.status == 200){
+
+				alert("upload complete!");
+				e.target.value = null;
+				e.target.value = "";
+			}
+		});
+
+		//listen for progress
+		ajax.upload.addEventListener("progress",function(e){
+
+			var percent = Math.round((e.loaded / e.total) * 100) + "%";
+			progress.style.width = percent;
+			progress.innerHTML = percent;
+		});
+
+		ajax.open("POST","api.php",true);
+		ajax.send(stuff);
+	}
+
+</script>
